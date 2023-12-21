@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -30,7 +32,10 @@ android {
 
     }
     buildTypes.forEach {
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
         it.buildConfigField("String", "BASE_URL", "\"https://sos.srca.org.sa/api/test/\"")
+        it.buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
     }
 
     compileOptions {
