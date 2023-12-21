@@ -49,9 +49,12 @@ class TrackingViewModel @Inject constructor(
         }.start()
     }
 
-    fun setupTracker() {
+    fun setupTracker(){
         startTimer()
         listenForGpsUpdates()
+    }
+
+    fun fetchLocation() {
         locationTracker.fetchLocation(callback = object : LocationTracker.LocationResponse() {
             override fun onLocationChanged(location: Location?) {
                 location?.let {
@@ -74,7 +77,12 @@ class TrackingViewModel @Inject constructor(
     private fun isLocationMocked(location: Location) = locationMockDetector.isMockLocation(location)
 
     private fun checkGpsStatus() {
-        _uiState.update { it.copy(gpsEnabled = locationTracker.isGpsProviderEnabled()) }
+        val hasGpsBeenEnabled = _uiState.value.gpsEnabled
+        val isGpsEnabled = locationTracker.isGpsProviderEnabled()
+        if (hasGpsBeenEnabled != isGpsEnabled) {
+            _uiState.update { it.copy(gpsEnabled = isGpsEnabled) }
+            fetchLocation()
+        }
     }
 
     private fun listenForGpsUpdates() {

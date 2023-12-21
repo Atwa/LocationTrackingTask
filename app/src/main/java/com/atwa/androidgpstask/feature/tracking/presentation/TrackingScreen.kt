@@ -26,6 +26,7 @@ fun TrackingScreen(viewModel: TrackingViewModel) {
     val state = viewModel.uiState.collectAsState().value
     LaunchedEffect(key1 = 1) {
         viewModel.setupTracker()
+        viewModel.fetchLocation()
     }
     Column(
         modifier = Modifier

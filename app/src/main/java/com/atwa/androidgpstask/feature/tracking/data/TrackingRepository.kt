@@ -10,7 +10,7 @@ class TrackingRepository @Inject constructor(
     suspend fun uploadLocation(location: Location) = invokeCall {
         trackingApi.uploadLocation(
             LocationUpdateRequest(
-                location.longitude,
+                location.latitude,
                 location.longitude
             )
         )
