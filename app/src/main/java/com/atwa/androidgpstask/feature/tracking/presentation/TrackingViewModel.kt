@@ -6,9 +6,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atwa.androidgpstask.feature.tracking.data.TrackingRepository
-import com.atwa.androidgpstask.feature.tracking.infrastructure.LocationMockDetector
 import com.atwa.androidgpstask.feature.tracking.infrastructure.LocationTracker
-import com.atwa.androidgpstask.feature.tracking.infrastructure.LocationTracker.LocationResponse
+import com.atwa.androidgpstask.feature.tracking.infrastructure.MockLocationDetector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TrackingViewModel @Inject constructor(
     private val locationTracker: LocationTracker,
-    private val locationMockDetector: LocationMockDetector,
+    private val locationMockDetector: MockLocationDetector,
     private val trackingRepository: TrackingRepository,
 ) : ViewModel() {
 
@@ -53,7 +52,7 @@ class TrackingViewModel @Inject constructor(
     fun setupTracker() {
         startTimer()
         listenForGpsUpdates()
-        locationTracker.fetchLocation(callback = object : LocationResponse() {
+        locationTracker.fetchLocation(callback = object : LocationTracker.LocationResponse() {
             override fun onLocationChanged(location: Location?) {
                 location?.let {
                     Log.d(TAG, "Location update Received : $it")
@@ -72,8 +71,7 @@ class TrackingViewModel @Inject constructor(
         })
     }
 
-    private fun isLocationMocked(location: Location) =
-        locationMockDetector.isMockLocation(location)
+    private fun isLocationMocked(location: Location) = locationMockDetector.isMockLocation(location)
 
     private fun checkGpsStatus() {
         _uiState.update { it.copy(gpsEnabled = locationTracker.isGpsProviderEnabled()) }

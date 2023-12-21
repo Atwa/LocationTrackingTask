@@ -10,7 +10,7 @@ import com.atwa.androidgpstask.BuildConfig
 import javax.inject.Inject
 
 
-class LocationMockDetector @Inject constructor(val context: Context) {
+class MockLocationDetectorImpl @Inject constructor(val context: Context) : MockLocationDetector {
 
     private fun isMockLocationEnabled(): Boolean {
         return try {
@@ -32,7 +32,7 @@ class LocationMockDetector @Inject constructor(val context: Context) {
         }
     }
 
-    fun isMockLocation(location: Location): Boolean {
+    override fun isMockLocation(location: Location): Boolean {
         val isMockLocation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             location.isMock
         } else {
