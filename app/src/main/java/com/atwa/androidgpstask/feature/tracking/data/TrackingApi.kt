@@ -5,5 +5,5 @@ import retrofit2.http.POST
 
 interface TrackingApi {
     @POST("LocationTest")
-    suspend fun uploadLocation(@Body location: LocationRequest): Any
+    suspend fun uploadLocation(@Body location: LocationUpdateRequest): LocationUpdateResponse
 }

@@ -6,7 +6,7 @@ object NetworkRouter {
 
     private val networkErrorHandler: NetworkErrorHandler by lazy { NetworkErrorHandlerImpl() }
 
-    suspend fun <R : Any> invokeCall(call: suspend () -> R): Result<R> {
+    suspend fun <R : ResponseValidator> invokeCall(call: suspend () -> R): Result<R> {
         return try {
             val response = call.invoke()
             if (isSuccessResponse(response)) Result.success(response)
@@ -21,8 +21,8 @@ object NetworkRouter {
         }
     }
 
-    private fun <R> isSuccessResponse(response: R?): Boolean {
-        return response != null
+    private fun <R : ResponseValidator> isSuccessResponse(response: R?): Boolean {
+        return response != null && response.isValid()
     }
 
 }
